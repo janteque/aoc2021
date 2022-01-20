@@ -2,30 +2,6 @@ import numpy as np
 import pandas as pd
 
 
-digit_patterns={
-    0:list("abcefg"),   #6 3
-    1:list("cf"),       #2 *
-    2:list("acdeg"),    #5 3
-    3:list("acdfg"),    #5 3
-    4:list("bcdf"),     #4 *
-    5:list("abdfg"),    #5 3
-    6:list("abdefg"),   #6 3
-    7:list("acf"),      #3 *
-    8:list("abcdefg"),  #8 *
-    9:list("abcdfg")    #6 3
-}
-
-
-
-#a == in 7 not in 1
-#b == in 9 not in 3
-#d == in 8 not in 0
-#e == in 8 not in 9
-#f == in 1, not c
-#g == in 9 not in 4, not in 7
-
-
-
 
 signal_patterns = []
 output_values = []
@@ -46,6 +22,17 @@ def process_line(line):
 
     digits={}
 
+    #detects the different digits based on these rules 
+    # 1 == 2 lines
+    # 4 == 4 lines
+    # 7 == 3 lines
+    # 8 == 7 lines
+    # 9 == 6 lines, including 7 and 4
+    # 6 == 6 lines, not including 1
+    # 0 == 6 lines, not 9 not 6
+    # 3 == 5 lines including 1
+    # 5 == 5 lines, included in 6
+    # 2 == 5 lines, not 3 not 5
     digits[1] = list(list(filter(lambda p: len(p) == 2, patterns))[0])
     digits[4] = list(list(filter(lambda p: len(p) == 4, patterns))[0])
     digits[7] = list(list(filter(lambda p: len(p) == 3, patterns))[0])
@@ -57,17 +44,7 @@ def process_line(line):
     digits[5] = list(list(filter(lambda p: (len(p) == 5 and all(elem in digits[6] for elem in list(p))) , patterns))[0])
     digits[2] = list(list(filter(lambda p: (len(p) == 5 and not(all(elem in list(p) for elem in digits[5]) or all(elem in list(p) for elem in digits[3]))) , patterns))[0])
    
-    # 1 == 2 lines
-    # 4 == 4 lines
-    # 7 == 3 lines
-    # 8 == 7 lines
-    # 9 == 6 lines, including 7 and 4
-    # 6 == 6 lines, not including 1
-    # c == in 8 not in 6
-    # 0 == 6 lines, not 9 not 6
-    # 3 == 5 lines including 1
-    # 5 == 5 lines, included in 6
-    # 2 == 5 lines, not 3 not 5
+
     patterns_dict = {}
     number = 0
     for digit, patternlist in digits.items():
